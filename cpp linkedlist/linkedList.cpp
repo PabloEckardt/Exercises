@@ -3,13 +3,19 @@
 
 class Node{
 public:
-    Node * last;
-    Node * next;
+    Node * left;
+    Node * right;
     int value = 0;
+    Node(){
+        left = NULL;
+        right = NULL;
+        value = 0;
+    }
     static Node * newNode(int num){
         Node * node = new Node;
         node->value = num;
-        node->next = NULL;
+        node->right = NULL;
+        node->left = NULL;
         return node;
     }
 };
@@ -17,40 +23,75 @@ public:
 class LinkedList{
 public:
     Node * head;
+    Node * tail;
     int count = 0;
     Node * iterator;
     void appendNode(int num){
         if (count == 0){
             head = Node::newNode(num);
+            tail = head;
             count++;
         }
         else{
             iterator = head;
-            while(iterator->next != NULL){
-                iterator = iterator->next;
+            //remove the iteration and have the tail simply expand one to the right
+            while(iterator->right != NULL){
+                iterator = iterator->right;
             }
-            iterator->next = Node::newNode(num);
+            iterator->right = Node::newNode(num);
+            tail = iterator-> right;
             count++;
+            iterator->right->left = iterator;
+            //reset iteratorp
             iterator = head;
         }
     }
-    void PrintList(){
+
+    void removeLast(){
+        tail = tail->left;
+        delete(tail->right);
+        tail->right = NULL;
+    }
+
+    void printList(){
         std::cout << "linked List values: \n"<< head->value << std::endl;
         iterator = head;
-        while(iterator->next != NULL){
-            iterator = iterator->next;
+        while(iterator->right != NULL){
+            iterator = iterator->right;
             std::cout << iterator->value  << std::endl;
         }
     }
-
+    void reversePrint(){
+        iterator = head;
+        while(iterator->right != NULL){
+            iterator = iterator->right;
+        }
+        std::cout << "linked List reverse values: \n"<< iterator->value << std::endl;
+        while( iterator->left != NULL){
+            iterator = iterator->left;
+            std::cout << iterator->value << std::endl;
+        }
+    }
 
 };
 
+class stack{
+public:
+    Node * node;
+    Node * pop(){
+
+    }
+};
 
 int main (){
     LinkedList myLinkedList;
+    myLinkedList.appendNode(1);
     myLinkedList.appendNode(2);
     myLinkedList.appendNode(3);
-    myLinkedList.PrintList();
+    myLinkedList.printList();
+    myLinkedList.reversePrint();
+    myLinkedList.removeLast();
+    myLinkedList.printList();
+
     return 0;
 }
